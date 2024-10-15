@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Blog</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Dog Blog!</h1>
+
+        <% if (loggedInUser) { %>
+            <p>Welcome, <%= loggedInUser.name %>!</p>
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/signin">Sign In</a>
+            <a href="/signup">Sign Up</a>
+        <% } %>
+    </header>
+
+    <h2>Blog Posts</h2>
+
+    <% posts.forEach(post => { %>
+        <div class="post">
+            <h3><%= post.title %></h3>
+            <p><%= post.body %></p>
+            <p>Posted by: <%= post.creator_name %> at <%= post.date_created %></p>
+    
+            <% if (loggedInUser && post.creator_user_id === loggedInUser.user_id) { %>
+                <a href="/edit/<%= post.blog_id %>">Edit</a>
+                <form action="/delete-post/<%= post.blog_id %>" method="POST" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            <% } %>
+        </div>
+    <% }) %>
+    
+
+    <% if (loggedInUser) { %>
+        <h2>Create a New Post</h2>
+        <form action="/create" method="POST">
+            <label for="title">Title:</label>
+            <input type="text" name="title" required>
+            <label for="body">Content:</label>
+            <textarea name="body" required></textarea>
+            <button type="submit">Create Post</button>
+        </form>
+    <% } else { %>
+        <p>You must be signed in to create a post. <a href="/signin">Sign In</a> or <a href="/signup">Sign Up</a> now.</p>
+    <% } %>
+</body>
+</html>
